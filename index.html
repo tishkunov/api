@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <title>Document</title>
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  * {
+    margin:0;
+    padding: 0;
+  }
+  .container {
+    background-image: url(./pt.png);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+  .wrapper {
+    margin:0 auto;
+    width: 1070px;
+  }
+  .field {
+    width: 525px;
+    height: 525px;
+    max-width: 100%;
+
+        margin: 0 auto;
+        position: absolute;
+margin: -250px 0 0 -250px;
+left: 50%;
+top: 50%;
+  }
+  .cell {
+    width: 150px;
+    height: 150px;
+    float:left;
+    background-color: #fff;
+    margin-left:10px;
+    margin-right: 10px;
+    margin-top:10px;
+    /* background-image: url(./pt.png); */
+    cursor: pointer;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+  }
+  div.turn {
+    position: absolute;
+    width: auto;
+    height: 100px;
+
+    margin-left: 875px;
+  }
+  div.turn p.turn {
+    font-size: 24px;
+    font-family: 'Open Sans', sans-serif;
+    float:left;
+    color:#000;
+  }
+  div.turn p#cross-tac {
+    float:left;
+    font-size: 24px;
+    font-family: 'Open Sans', sans-serif;
+    color:#ff0000;
+  }
+  #star-game {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    border:none;
+    background-color: #ffe100;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 36px;
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    left:50%;
+    top:50%;
+    margin:-35px 0 0 -120px;
+  }
+  #star-new-game {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    border:none;
+    background-color: #ffe100;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 36px;
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    left:50%;
+    top:50%;
+    margin:-35px 0 0 -163px;
+    display: none;
+  }
+  .score {
+    position: absolute;
+    margin-left: 875px;
+    margin-top: 45px;
+  }
+  .score p {
+    font-size: 24px;
+    font-family: 'Open Sans', sans-serif;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+      <div class="wrapper">
+
+      <div class="field">
+        <div class="cell" id="1"></div>
+        <div class="cell" id="2"></div>
+        <div class="cell" id="3"></div>
+        <div class="cell" id="4"></div>
+        <div class="cell" id="5"></div>
+        <div class="cell" id="6"></div>
+        <div class="cell" id="7"></div>
+        <div class="cell" id="8"></div>
+        <div class="cell" id="9"></div>
+      </div>
+      <div class="turn">
+        <p class="turn">TURN:</p>
+        <p id="cross-tac"></p>
+      </div>
+      <button id="star-game">START GAME</button>
+      <button id="star-new-game">START NEW GAME</button>
+      <div class="score">
+        <div>
+          <p id="cross-score">CROSS: 0</p>
+        </div>
+        <div>
+          <p id="tac-score">TAC: 0</p>
+        </div>
+      </div>
+      </div>
+  </div>
+  <script>
+  var cells = document.getElementsByClassName('cell');
+
+  var cellsMatrix = [0,0,0,0,0,0,0,0,0];
+
+  var turn = true;
+
+  var counter = 0;
+
+  var counterWinCross = 0;
+
+  var counterWinTac = 0;
+
+  var crossTac = document.getElementById('cross-tac');
+
+  var starGame = document.getElementById('star-game');
+
+  var throwEr = 0;
+
+  var game = 1;
+
+  var starNewGame = document.getElementById('star-new-game');
+
+  var winsCross = 0;
+
+  var winsTac = 0;
+
+  var counterWins = [0,0];
+
+  var crossScore = document.getElementById('cross-score');
+
+  var tacScore = document.getElementById('tac-score');
+
+  function checkStandOff() {
+    for (i=0;i<cellsMatrix.length;i++) {
+      if (cellsMatrix[i] > 0) {
+        counter = counter + 1;
+      }
+
+    }
+
+    if (counter == 9 && game > 0) {
+      alert('STAND OFF');
+      endGame();
+    }
+    else {
+      counter = 0;
+    }
+  }
+  ;
+
+  function endGame() {
+    crossTac.innerHTML = ' ';
+    for (i=0;i<cells.length;i++) {
+      cells[i].removeEventListener('click',onClickCell);
+    };
+    function gameStop() {
+      return game = 0;
+    };
+    gameStop();
+    starNewGame.style.display = 'block';
+    crossScore.innerHTML = 'CROSS: ' + counterWins[0];
+    tacScore.innerHTML = 'TAC: ' + counterWins[1];
+  };
+
+
+
+  function startNewGame() {
+    for (i=0; i < cellsMatrix.length; i++) {
+      cellsMatrix[i] = 0;
+      cells[i].style.backgroundImage = 'none';
+    }
+    for (i=0; i <cells.length; i++) {
+      cells[i].addEventListener('click', onClickCell);
+    };
+    game = 1;
+    turn = true;
+    crossTac.innerHTML = 'CROSS';
+    crossTac.style.color = '#ff0000';
+    starNewGame.style.display = 'none';
+  };
+  function changeTurn(){
+    if (game == 0) {
+      crossTac.innerHTML = ' ';
+      return;
+    }
+    if (turn == true) {
+      turn = false;
+      crossTac.innerHTML = 'TAC';
+      crossTac.style.color = '#2600ff';
+    }
+    else {
+      turn = true;
+      crossTac.innerHTML = 'CROSS';
+      crossTac.style.color = '#ff0000';
+    }
+  };
+
+  function checkWin(character,value,counterWin) {
+    switch (value) {
+      case cellsMatrix[0]*cellsMatrix[1]*cellsMatrix[2]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[3]*cellsMatrix[4]*cellsMatrix[5]:
+        alert(character + ' win');
+        endGame();
+        counterWins[counterWin]++;
+      break;
+
+      case cellsMatrix[6]*cellsMatrix[7]*cellsMatrix[8]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[0]*cellsMatrix[4]*cellsMatrix[8]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[2]*cellsMatrix[4]*cellsMatrix[6]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[0]*cellsMatrix[3]*cellsMatrix[6]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[1]*cellsMatrix[4]*cellsMatrix[7]:
+        alert(character + ' win');
+        counterWins[counterWin]++;
+        endGame();
+      break;
+
+      case cellsMatrix[2]*cellsMatrix[5]*cellsMatrix[8]:
+        alert(character + ' win');
+        counterWins[counterWinCross]++;
+        console.log(counterWinCross);
+        endGame();
+      break;
+    }
+  }
+;
+
+  function onClickCell(){
+
+    if (cellsMatrix[Number(this.id)-1]>0) {
+      return '';
+    };
+
+    if (turn == true) {
+        console.log(this)
+        this.style.backgroundImage = 'url(./close.png)';
+        cellsMatrix[Number(this.id)-1] = 1;
+        checkWin('Cross',1,0);
+        changeTurn();
+    }
+    else {
+      this.style.backgroundImage = 'url(./tac.png)';
+      cellsMatrix[Number(this.id)-1] = 2;
+      checkWin('Tac',8,1);
+      changeTurn();
+    }
+    checkStandOff();
+  };
+
+  function startGame() {
+    starGame.style.display = 'none';
+    for (i=0;i<cells.length;i++) {
+      cells[i].addEventListener('click',onClickCell);
+    };
+  }
+
+  starGame.addEventListener('click',startGame);
+  starNewGame.addEventListener('click',startNewGame);
+
+
+  </script>
+</body>
+</html>
