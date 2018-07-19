@@ -68,10 +68,10 @@ var app = express();
 
 
 app.get('/listUsers', function (req, res) {
-   fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-       console.log( data );
-       res.end( data );
-   });
+//    fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+//        console.log( data );
+//        res.end( data );
+//    });
    mysqlssh.connect(
 	    {
 	        host: '207.154.209.20',
